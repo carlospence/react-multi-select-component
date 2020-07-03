@@ -11,6 +11,7 @@ import getString from "../lib/get-string";
 import { Option } from "../lib/interfaces";
 import SelectItem from "./select-item";
 import SelectList from "./select-list";
+import {CloseIcon} from "./icons"
 
 interface ISelectPanelProps {
   ItemRenderer?: Function;
@@ -19,6 +20,7 @@ interface ISelectPanelProps {
   focusSearchOnOpen: boolean;
   selectAllLabel?: string;
   onChange: (selected: Option[]) => void;
+  onMobileClose: () => void;
   disabled?: boolean;
   disableSearch?: boolean;
   hasSelectAll: boolean;
@@ -43,6 +45,20 @@ const SelectSearchContainer = css({
   },
 });
 
+const MobileContainerClose = css({
+  display: "none",
+  width: "100%",
+  height: "var(--rmsc-height)",
+  padding: "10px var(--rmsc-spacing)",
+  // padding: "10px",
+  marginBottom: "10px",
+    paddingRight: "5px",
+    '@media (max-width: 768px)' : {
+      display: "block"
+    }
+
+})
+
 export const SelectPanel = (props: ISelectPanelProps) => {
   const {
     onChange,
@@ -56,6 +72,7 @@ export const SelectPanel = (props: ISelectPanelProps) => {
     focusSearchOnOpen,
     hasSelectAll,
     overrideStrings,
+    onMobileClose,
   } = props;
   const [searchText, setSearchText] = useState("");
   const [focusIndex, setFocusIndex] = useState(
@@ -92,6 +109,11 @@ export const SelectPanel = (props: ISelectPanelProps) => {
     setSearchText(e.target.value);
     setFocusIndex(FocusType.SEARCH);
   };
+
+  const handleMobileButtonClose = (e) => {
+    onMobileClose();
+    e.preventDefault();
+  }
 
   const handleItemClicked = (index: number) => setFocusIndex(index);
 
@@ -134,6 +156,10 @@ export const SelectPanel = (props: ISelectPanelProps) => {
 
   return (
     <div className="select-panel" role="listbox" onKeyDown={handleKeyDown}>
+       <div className={MobileContainerClose}>
+      <button onClick={handleMobileButtonClose} type="button" className="close"><CloseIcon></CloseIcon></button>
+      </div>
+      
       {!disableSearch && (
         <div className={SelectSearchContainer}>
           <input
@@ -147,6 +173,8 @@ export const SelectPanel = (props: ISelectPanelProps) => {
         </div>
       )}
 
+     
+        <div className="select-content" role="listbox">
       {hasSelectAll && !searchText && (
         <SelectItem
           focused={focusIndex === 0}
@@ -167,6 +195,7 @@ export const SelectPanel = (props: ISelectPanelProps) => {
         ItemRenderer={ItemRenderer}
         disabled={disabled}
       />
+      </div>
     </div>
   );
 };

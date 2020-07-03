@@ -119,6 +119,8 @@ const Dropdown = ({
   const handleMouseLeave = () => handleHover(false);
   const toggleExpanded = () => setExpanded(isLoading ? false : !expanded);
 
+ 
+
   return (
     <div
       tabIndex={0}
@@ -145,7 +147,7 @@ const Dropdown = ({
       {expanded && (
         <div className={`${PanelContainer} dropdown-content`}>
           <div className="panel-content">
-            <ContentComponent {...contentProps} />
+            <ContentComponent onMobileClose={toggleExpanded} {...contentProps} />
           </div>
         </div>
       )}
